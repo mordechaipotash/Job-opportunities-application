@@ -1,0 +1,34 @@
+import markdown
+import re
+
+def parse_markdown_file(markdown_file_path):
+    with open(markdown_file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    # Split the content into job opportunities
+    job_opportunities = content.split('## ')[1:]
+
+    parsed_jobs = []
+    for job in job_opportunities:
+        job_lines = job.split('\n')
+        title_company = job_lines[0].split(' at ')
+        title = title_company[0].strip()
+        company = title_company[1].strip() if len(title_company) > 1 else "Unknown Company"
+        details = {
+            "Position": job_lines[1].split(': ')[1].strip(),
+            "Posted": job_lines[2].split(': ')[1].strip(),
+            "Overview": job_lines[3].split(': ')[1].strip(),
+            "Scorecard": job_lines[6:]
+        }
+        parsed_jobs.append({
+            "Title": title,
+            "Company": company,
+            "Details": details
+        })
+
+    return parsed_jobs
+
+# Path to the Markdown file
+markdown_file_path = '/mnt/data/Job_Opportunities_Scorecard.md'
+parsed_jobs = parse_markdown_file(markdown_file_path)
+parsed_jobs
